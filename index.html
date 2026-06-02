@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食堂仿真系统下载</title>
+  <style>
+    :root{
+      --ink:#171717;
+      --muted:#6b6b6b;
+      --line:#dedbd3;
+      --paper:#f7f5ef;
+      --panel:#ffffff;
+      --green:#246b45;
+      --blue:#274b7a;
+      --amber:#9a6414;
+      --red:#9a2d24;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Microsoft YaHei",Segoe UI,Arial,sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,#f9f8f3 0%,#ece8dc 100%);
+    }
+    .wrap{
+      width:min(1080px,calc(100% - 32px));
+      margin:0 auto;
+    }
+    header{
+      height:58px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.04em;
+    }
+    .mark{
+      width:28px;
+      height:28px;
+      border-radius:7px;
+      background:var(--ink);
+      position:relative;
+    }
+    .mark::before,.mark::after{
+      content:"";
+      position:absolute;
+      background:white;
+      border-radius:2px;
+    }
+    .mark::before{left:7px;top:8px;width:14px;height:4px}
+    .mark::after{left:9px;top:15px;width:10px;height:6px}
+    .nav-note{
+      color:var(--muted);
+      font-size:13px;
+    }
+    main{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(420px,520px);
+      gap:44px;
+      align-items:center;
+      padding:56px 0 42px;
+    }
+    h1{
+      margin:0 0 16px;
+      font-size:clamp(34px,5vw,58px);
+      line-height:1.04;
+      letter-spacing:0;
+    }
+    .lead{
+      max-width:620px;
+      color:#3e3e3e;
+      font-size:17px;
+      line-height:1.75;
+      margin:0 0 26px;
+    }
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:42px;
+      padding:0 18px;
+      border-radius:6px;
+      border:1px solid var(--ink);
+      background:var(--ink);
+      color:white;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:700;
+    }
+    .btn.secondary{
+      background:transparent;
+      color:var(--ink);
+    }
+    .meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.58);
+      border-radius:999px;
+      padding:5px 10px;
+    }
+    .preview{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:8px;
+      box-shadow:0 18px 48px rgba(50,45,30,.14);
+      overflow:hidden;
+    }
+    .topbar{
+      height:34px;
+      background:#1d1d1d;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:0 12px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:#d45d4c}
+    .dot:nth-child(2){background:#d6a23a}
+    .dot:nth-child(3){background:#5aa05a}
+    .screen{
+      height:330px;
+      display:grid;
+      grid-template-columns:132px 1fr;
+      background:#f4f3ee;
+    }
+    .side{
+      padding:12px;
+      border-right:1px solid var(--line);
+      background:#fbfaf7;
+    }
+    .label{height:7px;background:#b8b4aa;border-radius:2px;margin:0 0 9px;width:52px}
+    .slider{height:22px;margin-bottom:11px}
+    .slider span{display:block;height:4px;background:#d7d3c8;border-radius:4px}
+    .slider span::after{content:"";display:block;width:48%;height:4px;background:var(--blue);border-radius:4px}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+    .metric{height:42px;border:1px solid var(--line);border-radius:5px;background:white}
+    .canvas{
+      position:relative;
+      padding:16px;
+      overflow:hidden;
+    }
+    .zone{
+      position:absolute;
+      inset:118px 18px 18px;
+      border-top:1px dashed rgba(0,0,0,.2);
+      background:rgba(36,107,69,.05);
+    }
+    .win{
+      position:absolute;
+      top:38px;
+      width:42px;
+      height:24px;
+      border:1px solid var(--amber);
+      background:rgba(154,100,20,.1);
+      border-radius:4px;
+    }
+    .win:nth-child(1){left:28px}.win:nth-child(2){left:100px}.win:nth-child(3){left:172px}.win:nth-child(4){left:244px}
+    .table{
+      position:absolute;
+      width:30px;
+      height:22px;
+      border-radius:4px;
+      border:1px solid rgba(36,107,69,.45);
+      background:rgba(36,107,69,.08);
+    }
+    .student{
+      position:absolute;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      border:1px solid currentColor;
+      background:currentColor;
+      opacity:.78;
+    }
+    .rush{color:#b84a00}.habit{color:#2a3a8a}.rand{color:#1a6a2a}
+    .charts{
+      height:78px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      padding:0 16px 14px;
+      background:#fbfaf7;
+      border-top:1px solid var(--line);
+    }
+    .chart{
+      align-self:end;
+      height:52px;
+      border-left:1px solid #dad6cc;
+      border-bottom:1px solid #dad6cc;
+      position:relative;
+    }
+    .bar{
+      position:absolute;
+      bottom:0;
+      width:10px;
+      background:rgba(39,75,122,.45);
+      border-radius:2px 2px 0 0;
+    }
+    section{
+      padding:20px 0 52px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .card{
+      background:rgba(255,255,255,.62);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 8px;
+      font-size:15px;
+    }
+    .card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+    footer{
+      color:var(--muted);
+      font-size:12px;
+      padding:18px 0 28px;
+      border-top:1px solid rgba(0,0,0,.08);
+    }
+    @media(max-width:860px){
+      main{grid-template-columns:1fr;padding-top:34px}
+      .preview{max-width:560px}
+      section{grid-template-columns:1fr}
+      header{height:auto;padding:14px 0;align-items:flex-start;gap:8px;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><span class="mark"></span><span>食堂仿真系统</span></div>
+      <div class="nav-note">Windows 桌面版下载</div>
+    </header>
+
+    <main>
+      <div>
+        <h1>食堂就餐仿真系统</h1>
+        <p class="lead">面向食堂窗口排队、餐桌占用、学生画像和就餐流线的可视化仿真工具。下载 Windows 桌面版后，双击即可在本机浏览器中运行。</p>
+        <div class="actions">
+          <a id="downloadBtn" class="btn" href="./downloads/canteen-simulation-windows.zip" download>立即下载</a>
+          <a class="btn secondary" href="./downloads/canteen-simulation-windows.zip">备用链接</a>
+        </div>
+        <div class="meta">
+          <span class="pill">Windows 10/11</span>
+          <span class="pill">约 13.94 MB</span>
+          <span class="pill">免安装绿色版</span>
+          <span class="pill">内置 C++ 仿真引擎</span>
+        </div>
+      </div>
+
+      <div class="preview" aria-label="软件界面预览">
+        <div class="topbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="screen">
+          <div class="side">
+            <div class="label"></div>
+            <div class="slider"><span></span></div>
+            <div class="slider"><span></span></div>
+            <div class="slider"><span></span></div>
+            <div class="slider"><span></span></div>
+            <div class="metrics"><div class="metric"></div><div class="metric"></div><div class="metric"></div><div class="metric"></div></div>
+          </div>
+          <div>
+            <div class="canvas">
+              <div class="zone"></div>
+              <div class="win"></div><div class="win"></div><div class="win"></div><div class="win"></div>
+              <div class="table" style="left:42px;top:148px"></div>
+              <div class="table" style="left:108px;top:148px"></div>
+              <div class="table" style="left:174px;top:148px"></div>
+              <div class="table" style="left:240px;top:148px"></div>
+              <div class="table" style="left:72px;top:205px"></div>
+              <div class="table" style="left:156px;top:205px"></div>
+              <span class="student rush" style="left:48px;top:82px"></span>
+              <span class="student habit" style="left:56px;top:96px"></span>
+              <span class="student rand" style="left:122px;top:86px"></span>
+              <span class="student rush" style="left:168px;top:136px"></span>
+              <span class="student habit" style="left:222px;top:175px"></span>
+              <span class="student rand" style="left:94px;top:218px"></span>
+            </div>
+            <div class="charts">
+              <div class="chart"><i class="bar" style="left:10px;height:28px"></i><i class="bar" style="left:28px;height:42px"></i><i class="bar" style="left:46px;height:22px"></i></div>
+              <div class="chart"><i class="bar" style="left:12px;height:18px;background:rgba(36,107,69,.45)"></i><i class="bar" style="left:30px;height:45px;background:rgba(36,107,69,.45)"></i></div>
+              <div class="chart"><i class="bar" style="left:14px;height:36px;background:rgba(154,100,20,.45)"></i><i class="bar" style="left:34px;height:24px;background:rgba(154,100,20,.45)"></i></div>
+              <div class="chart"><i class="bar" style="left:18px;height:44px;background:rgba(154,45,36,.38)"></i><i class="bar" style="left:40px;height:30px;background:rgba(39,75,122,.45)"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section>
+      <div class="card"><h2>下载后怎么用</h2><p>解压压缩包，双击“食堂仿真系统.exe”即可启动。程序会自动打开本机浏览器。</p></div>
+      <div class="card"><h2>快捷方式</h2><p>解压后可运行“创建快捷方式.bat”，自动生成桌面和开始菜单入口。</p></div>
+      <div class="card"><h2>运行说明</h2><p>本版本为本机桌面版，不需要安装 Python，也不需要外网加载图表资源。</p></div>
+    </section>
+
+    <footer>下载包由食堂仿真系统桌面版生成。若浏览器未自动下载，请点击“备用链接”。</footer>
+  </div>
+
+  <script>
+    const url = './downloads/canteen-simulation-windows.zip';
+    document.getElementById('downloadBtn').href = url;
+    if (location.hash === '#download') {
+      setTimeout(() => {
+        location.href = url;
+      }, 700);
+    }
+  </script>
+</body>
+</html>
